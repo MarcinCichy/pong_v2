@@ -24,10 +24,9 @@ class Network:
         return data_decode
 
 
-    
     def send(self, data):
         """
-        data; JSON
+        data: JSON
         """
         try:
             self.client.send(data)  # tutaj nie dałem encodowania, bo otrzymujemy dane w postaci JSONa i wysyałamy je dalej
