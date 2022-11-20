@@ -35,6 +35,7 @@ class Game:
 		current_paddle = self.players[int(self.id)] # To be added from Network
 		run = True
 		while True:
+			time.sleep(0.008)
 			self.screen.update()
 			self.screen.onkey(current_paddle.go_up, "Up")
 			self.screen.onkey(current_paddle.go_down, "Down")
@@ -129,10 +130,10 @@ class Ball(Turtle):
 		self.right_move = random.randint(0, 180)
 		self.left_move = random.randint(180, 360)
 		self.setheading(self.right_move)
-		self.ball_speed = 4
+		self.ball_speed = 2
 
 	def new_angle(self, side):
-		right_list = [(0, 60), (300, 360)]
+		right_list = [(30, 60), (300, 330)]
 		right = random.choice(right_list)
 		self.right_move = random.randint(right[0], right[1])
 		self.left_move = random.randint(120, 240)
@@ -168,7 +169,7 @@ class Paddle(Turtle):
 		self.setheading(90)
 
 	def go_up(self):
-		self.forward(20)
+		self.forward(40)
 
 	def go_down(self):
-		self.back(20)
+		self.back(40)

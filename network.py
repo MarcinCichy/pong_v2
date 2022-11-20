@@ -3,7 +3,7 @@ import json
 
 PORT = 65432
 BUFFER = 2048
-HOST = "127.0.0.1"
+HOST = "192.168.0.4"
 
 
 class Network:

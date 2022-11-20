@@ -4,7 +4,7 @@ import json
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-server = "localhost"
+server = "192.168.0.4"
 port = 65432
 
 server_ip = socket.gethostbyname(server)
