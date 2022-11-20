@@ -21,7 +21,8 @@ currentId = "0"
 pos = {"id": "0",
        "0": 0,
        "1": 0,
-       "ball": (0, 0)} # Data to be sent: player id 0 and his vertical pos 0, same for player id 1, ball pos in tuple
+       "ball": (0, 0)}  # Data to be sent: player id 0 and his vertical pos 0, same for player id 1, ball pos in tuple
+
 
 def threaded_client(conn):
     global currentId, pos
@@ -33,21 +34,22 @@ def threaded_client(conn):
             data = conn.recv(2048)
             reply = message_decode(data)
             if not data:
-                conn.send(message_encode("Goodvye"))
+                conn.send(message_encode("Goodbye"))
                 break
             else:
                 print(f"Received: {reply}")
-                id = reply.get("id")
-                pos[id] = reply.get(id)
+                player_id = reply.get("id")
+                pos[player_id] = reply.get(player_id)
+                new_id = ""
 
-                if id == "0":
+                if player_id == "0":
                     new_id = "1"
                     """
                     ball position is going to be calculated on player 0
                     """
                     ball_pos = reply.get("ball")
                     pos["ball"] = ball_pos
-                if id == "1":
+                if player_id == "1":
                     new_id = "0"
 
                 pos["id"] = new_id
@@ -78,15 +80,3 @@ while True:
     print(f"Connected to: {addr}")
 
     _thread.start_new_thread(threaded_client, (conn,))
-
-
-
-
-
-
-
-
-
-
-
-

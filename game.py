@@ -1,9 +1,12 @@
+import time
 from turtle import Turtle
 from turtle import Screen
 import random
+from network import Network
 
 
 run = True
+
 
 class Game:
 	def __init__(self):
@@ -15,34 +18,67 @@ class Game:
 		self.player1 = Paddle((-350, 0))
 		self.player2 = Paddle((350, 0))
 		self.players = [self.player1, self.player2]
+		self.ball = Ball((0, 0))
 		self.scoreboard = Scoreboard()
 		self.screen.update()
-		"""
-		To be added:
-		"""
-		#self.net = Network()
-		#self.id = self.net.id
+		self.net = Network()
+		self.id = self.net.id
 
 	@staticmethod
 	def game_quit():
 		global run
 		run = False
 
-
 	def run(self):
 		global run
 		self.screen.listen()
-		currentPaddle = self.players[self.id] # To be added from Network
+		current_paddle = self.players[int(self.id)] # To be added from Network
 		run = True
 		while True:
-			self.screen.onkey(currentPaddle.go_up, "Up")
-			self.screen.onkey(currentPaddle.go_down, "Down")
+			self.screen.update()
+			self.screen.onkey(current_paddle.go_up, "Up")
+			self.screen.onkey(current_paddle.go_down, "Down")
 			self.screen.onkey(self.game_quit, "q")
+			if self.id == "0":
+				self.game_logic()
+				data = {"id": self.id,
+						"0": self.player1.ycor(),
+						"ball": (self.ball.xcor(), self.ball.ycor())}
+				reply = self.net.send(data)
+				player2_ypos = reply.get("1")
+				self.player2.goto((350, player2_ypos))
+			if self.id == "1":
+				data = {"id": self.id,
+						"1": self.player1.ycor()}
+				reply = self.net.send(data)
+				player1_ypos = reply.get("0")
+				ball_pos = reply.get("ball")
+				self.player1.goto((-350, player1_ypos))
+				self.ball.goto(ball_pos)
 
-			"""
-			Here will be sending and receiving data
-			
-			"""
+	def game_logic(self):
+		self.ball.move()
+		# Detect wall collision
+		if self.ball.ycor() > 290 or self.ball.ycor() < -290:
+			self.ball.y_bounce()
+		# Detect r_paddle collision
+		if self.ball.distance(self.player2) < 50 and self.ball.xcor() > 340:
+			self.ball.x_bounce()
+		# Detect l_paddle collision
+		if self.ball.distance(self.player1) < 50 and self.ball.xcor() < -340:
+			self.ball.x_bounce()
+		# Detect right miss
+		if self.ball.xcor() > 390:
+			time.sleep(0.5)
+			self.ball.new_angle("right")
+			self.ball.ball_speed = 4
+			self.scoreboard.l_point()
+		# Detect left miss
+		if self.ball.xcor() < -390:
+			time.sleep(0.5)
+			self.ball.new_angle("left")
+			self.ball.ball_speed = 4
+			self.scoreboard.r_point()
 	def send_data(self):
 		"""
 		Sending data using Network class
@@ -55,6 +91,7 @@ class Game:
 		Receiving data from server
 		:return:
 		"""
+
 
 class Scoreboard(Turtle):
 	def __init__(self):
