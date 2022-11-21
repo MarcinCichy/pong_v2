@@ -4,8 +4,10 @@ import json
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-server = "192.168.0.4"
+server = "172.31.41.140"
 port = 65432
+
+BUFFER = 4096
 
 server_ip = socket.gethostbyname(server)
 
@@ -31,7 +33,7 @@ def threaded_client(conn):
     reply = ""
     while True:
         try:
-            data = conn.recv(2048)
+            data = conn.recv(BUFFER)
             reply = message_decode(data)
             if not data:
                 conn.send(message_encode("Goodbye"))

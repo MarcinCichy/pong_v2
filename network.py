@@ -2,8 +2,8 @@ import socket
 import json
 
 PORT = 65432
-BUFFER = 2048
-HOST = "192.168.0.4"
+BUFFER = 4096
+HOST = "172.31.41.140"
 
 
 class Network:
@@ -14,7 +14,7 @@ class Network:
         self.port = PORT
         self.addr = (self.host, self.port)
         self.id = self.connect()
-        print(self.id)
+        # print(self.id)
         
         
     def connect(self):

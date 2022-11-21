@@ -35,7 +35,7 @@ class Game:
 		current_paddle = self.players[int(self.id)] # To be added from Network
 		run = True
 		while True:
-			time.sleep(0.008)
+			time.sleep(0.003)
 			self.screen.update()
 			self.screen.onkey(current_paddle.go_up, "Up")
 			self.screen.onkey(current_paddle.go_down, "Down")
@@ -50,7 +50,7 @@ class Game:
 				self.player2.goto((350, player2_ypos))
 			if self.id == "1":
 				data = {"id": self.id,
-						"1": self.player1.ycor()}
+						"1": self.player2.ycor()}
 				reply = self.net.send(data)
 				player1_ypos = reply.get("0")
 				ball_pos = reply.get("ball")
