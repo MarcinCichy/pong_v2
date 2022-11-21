@@ -4,7 +4,7 @@ import json
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-server = "172.31.41.140"
+server = "3.68.29.43"
 port = 65432
 
 BUFFER = 4096
@@ -23,7 +23,9 @@ currentId = "0"
 pos = {"id": "0",
        "0": 0,
        "1": 0,
-       "ball": (0, 0)}  # Data to be sent: player id 0 and his vertical pos 0, same for player id 1, ball pos in tuple
+       "ball": (0, 0),
+       "l_score": 0,
+       "r_score": 0}  # Data to be sent: player id 0 and his vertical pos 0, same for player id 1, ball pos in tuple
 
 
 def threaded_client(conn):
@@ -50,7 +52,11 @@ def threaded_client(conn):
                     ball position is going to be calculated on player 0
                     """
                     ball_pos = reply.get("ball")
+                    l_score = reply.get("l_score")
+                    r_score = reply.get("r_score")
                     pos["ball"] = ball_pos
+                    pos["l_score"] = l_score
+                    pos["r_score"] = r_score
                 if player_id == "1":
                     new_id = "0"
 

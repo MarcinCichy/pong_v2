@@ -35,7 +35,7 @@ class Game:
 		current_paddle = self.players[int(self.id)] # To be added from Network
 		run = True
 		while True:
-			time.sleep(0.003)
+			# time.sleep(0.003)
 			self.screen.update()
 			self.screen.onkey(current_paddle.go_up, "Up")
 			self.screen.onkey(current_paddle.go_down, "Down")
@@ -44,7 +44,9 @@ class Game:
 				self.game_logic()
 				data = {"id": self.id,
 						"0": self.player1.ycor(),
-						"ball": (self.ball.xcor(), self.ball.ycor())}
+						"ball": (self.ball.xcor(), self.ball.ycor()),
+						"l_score": self.scoreboard.l_score,
+						"r_score": self.scoreboard.r_score}
 				reply = self.net.send(data)
 				player2_ypos = reply.get("1")
 				self.player2.goto((350, player2_ypos))
@@ -54,8 +56,12 @@ class Game:
 				reply = self.net.send(data)
 				player1_ypos = reply.get("0")
 				ball_pos = reply.get("ball")
+				l_score = reply.get("l_score")
+				r_score = reply.get("r_score")
 				self.player1.goto((-350, player1_ypos))
 				self.ball.goto(ball_pos)
+				self.scoreboard.l_score = l_score
+				self.scoreboard.r_score = r_score
 
 	def game_logic(self):
 		self.ball.move()
@@ -80,18 +86,6 @@ class Game:
 			self.ball.new_angle("left")
 			self.ball.ball_speed = 4
 			self.scoreboard.r_point()
-	def send_data(self):
-		"""
-		Sending data using Network class
-		:return:
-		"""
-
-	@staticmethod
-	def receive_data():
-		"""
-		Receiving data from server
-		:return:
-		"""
 
 
 class Scoreboard(Turtle):
@@ -127,10 +121,10 @@ class Ball(Turtle):
 		self.color("white")
 		self.penup()
 		self.setpos(position)
-		self.right_move = random.randint(0, 180)
-		self.left_move = random.randint(180, 360)
+		self.right_move = random.randint(30, 120)
+		self.left_move = random.randint(210, 330)
 		self.setheading(self.right_move)
-		self.ball_speed = 2
+		self.ball_speed = 6
 
 	def new_angle(self, side):
 		right_list = [(30, 60), (300, 330)]
